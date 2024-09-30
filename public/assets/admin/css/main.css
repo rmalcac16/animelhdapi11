@@ -1,0 +1,151 @@
+:root {
+    --color-background: #171717; /* Fondo principal */
+    --color-secondary-background: #101010; /* Fondo secundario */
+    --color-primary: #e50914; /* Color primario */
+    --color-text: #ffffff; /* Color de texto claro */
+    --color-border: rgba(90, 90, 90, 0.1); /* Color del borde */
+    --color-link-opacity: rgba(229, 9, 20, 0.7); /* Rojo opaco para links */
+    --color-link-hover: rgba(
+        255,
+        0,
+        13,
+        0.303
+    ); /* Fondo rojo claro al pasar el mouse */
+}
+
+body {
+    background-color: var(--color-background);
+    color: var(--color-text);
+    margin: 0;
+    padding: 0;
+}
+
+#sidebar {
+    width: 250px;
+    position: fixed;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    background-color: var(--color-secondary-background);
+    padding: 1rem;
+    overflow-y: auto;
+}
+
+.main-content {
+    margin-left: 250px; /* Deja espacio para el sidebar */
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+}
+
+header.fixed-top {
+    position: fixed;
+    top: 0;
+    left: 250px; /* Alinea con el main-content */
+    right: 0;
+    z-index: 1030;
+}
+
+.content {
+    margin-top: 70px; /* Altura del header */
+    margin-bottom: 70px; /* Altura del footer */
+    overflow-y: auto;
+    padding: 1rem;
+}
+
+footer.fixed-bottom {
+    position: fixed;
+    bottom: 0;
+    left: 250px; /* Alinea con el main-content */
+    right: 0;
+    z-index: 1030;
+}
+
+.bg-secondary {
+    background-color: var(--color-secondary-background) !important;
+}
+
+.text-light {
+    color: var(--color-text) !important;
+}
+
+/* Estilo para los enlaces del menú */
+.nav-link {
+    padding: 0.75rem 1rem;
+    border-radius: 5px;
+    transition: background-color 0.3s;
+    color: var(--color-text);
+    text-decoration: none; /* Elimina el subrayado del enlace */
+}
+
+/* Cambia el color de fondo y mantiene el color del texto en hover y focus */
+.nav-link:hover,
+.nav-link:focus {
+    background-color: var(--color-link-hover) !important;
+    color: var(--color-text);
+    text-decoration: none;
+}
+
+.nav-item > .nav-link[data-bs-toggle="collapse"].active:hover,
+.nav-item > .nav-link[data-bs-toggle="collapse"].active:focus {
+    background-color: var(--color-link-hover) !important;
+    color: var(--color-text);
+    text-decoration: none;
+}
+
+.nav-item > .nav-link[data-bs-toggle="collapse"]:hover:not(.active),
+.nav-item > .nav-link[data-bs-toggle="collapse"]:focus:not(.active) {
+    background-color: transparent !important;
+    color: var(--color-text);
+    text-decoration: none;
+}
+
+.submenu .nav-link:hover,
+.submenu .nav-link:focus {
+    background: none !important;
+}
+
+.submenu2 .nav-link {
+    padding: 0.2rem 0.5rem;
+}
+
+/* Resaltar link activo */
+.nav-link.active {
+    background-color: var(--color-link-hover) !important;
+    border-radius: 5px;
+    color: var(--color-text); /* Asegura que el color del texto no cambie */
+}
+
+.nav-link span.active {
+    border-color: var(--color-link-hover) !important;
+    border-bottom: 4px solid;
+    padding-bottom: 4px;
+}
+
+.btn-primary:hover {
+    background-color: rgba(
+        255,
+        0,
+        13,
+        0.5
+    ) !important; /* Fondo rojo claro al pasar el mouse */
+}
+
+.btn-secondary:hover {
+    background-color: rgba(255, 255, 255, 0.2) !important;
+}
+
+/* Aumentar espacio entre los elementos del menú */
+.nav-item {
+    margin-bottom: var(--nav-item-margin-bottom);
+}
+
+/* Estilos para el submenú anidado */
+.nav .collapse {
+    padding-left: var(--sub-menu-padding-left);
+}
+
+/* Agregar espacio adicional entre el icono y el texto del menú */
+.nav-link i {
+    margin-right: var(--icon-margin-right);
+}
