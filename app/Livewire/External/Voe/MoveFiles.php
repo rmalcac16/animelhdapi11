@@ -4,6 +4,7 @@ namespace App\Livewire\External\Voe;
 
 use Livewire\Component;
 use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\File;
 
 class MoveFiles extends Component
 {
@@ -16,12 +17,22 @@ class MoveFiles extends Component
     public $sortField = 'name';
     public $sortDirection = 'asc'; 
 
-
-    private $apiKey = 'mknVw7z3Xggw6i23Sye2Y1HbsmoykKhusAtri3PU34CPKsEKtE0boHZFuvIwTcfN';
+    public $apiKey = '';
 
     public function mount()
     {
-        
+        $filePath = storage_path('app/api_keys.json');
+
+        if (File::exists($filePath)) {
+            $apiKeys = json_decode(File::get($filePath), true);
+            if (filled($apiKeys['voe'])) {
+                $this->apiKey = $apiKeys['voe'];
+            } else {
+                session()->flash('message', __('API Key for Voe is not configured. Please configure it first.'));
+            }
+        } else {
+            session()->flash('message', __('The API keys file does not exist. Please configure the API Key for Voe.'));
+        }
     }
 
     public function updatingSelectAll($value)
@@ -71,11 +82,11 @@ class MoveFiles extends Component
                 $this->selectAll = false;
             } else {
                 $this->files = [];
-                session()->flash('message', 'No se encontraron archivos en esta carpeta.');
+                session()->flash('message', __('No files found in this folder.'));
             }
         } else {
             $this->files = [];
-            session()->flash('message', 'No se pudo obtener la lista de archivos de la API.');
+            session()->flash('message', __('Could not retrieve the file list from the API.'));
         }
     }
 
@@ -88,12 +99,12 @@ class MoveFiles extends Component
     {
 
         if (empty($this->selectedFiles)) {
-            session()->flash('message', 'No ha seleccionado ningún archivo para mover.');
+            session()->flash('message', __('No files selected for moving.'));
             return;
         }
 
         if (!$this->destinationFolderId) {
-            session()->flash('message', 'Por favor, ingrese el ID de la carpeta de destino.');
+            session()->flash('message', __('Please enter the destination folder ID.'));
             return;
         }
 
@@ -119,7 +130,7 @@ class MoveFiles extends Component
             }
         }
 
-        $message = "Archivos movidos exitosamente: $successCount. Fallidos: $failureCount.";
+        $message = __("Files successfully moved: :success. Failed: :failure.", ['success' => $successCount, 'failure' => $failureCount]);
         session()->flash('message', $message);
 
         $this->getFiles();

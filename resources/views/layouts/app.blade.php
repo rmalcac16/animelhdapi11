@@ -23,17 +23,14 @@
             --icon-margin-right: 8px;
         }
 
-        /* Aumentar espacio entre los elementos del menú */
         .nav-item {
             margin-bottom: var(--nav-item-margin-bottom);
         }
 
-        /* Estilos para el submenú anidado */
         .nav .collapse {
             padding-left: var(--sub-menu-padding-left);
         }
 
-        /* Agregar espacio adicional entre el icono y el texto del menú */
         .nav-link i {
             margin-right: var(--icon-margin-right);
         }
@@ -41,18 +38,15 @@
 </head>
 
 <body>
-    <!-- Barra de navegación a la izquierda -->
+
     <nav class="bg-secondary text-light" id="sidebar" style="padding: 20px;">
         <ul class="nav flex-column">
-            <!-- Link 1: Dashboard -->
             <li class="nav-item">
                 <a class="nav-link @if (request()->routeIs('admin.dashboard')) active @endif d-flex align-items-center"
                     href="{{ route('admin.dashboard') }}">
                     <i class="bi bi-house-fill"></i> Dashboard
                 </a>
             </li>
-
-            <!-- Link 2: External con submenú -->
             <li class="nav-item">
                 <a class="nav-link d-flex align-items-center @if (request()->routeIs('admin.external.*')) active @endif"
                     data-bs-toggle="collapse" href="#externalSubmenu" role="button"
@@ -89,6 +83,12 @@
                         </li>
                     </ul>
                 </div>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link @if (request()->routeIs('admin.settings')) active @endif d-flex align-items-center"
+                    href="{{ route('admin.settings') }}">
+                    <i class="bi bi-gear"></i> {{ __('Settings') }}
+                </a>
             </li>
         </ul>
     </nav>
@@ -135,7 +135,8 @@
         <!-- Pie de página fijo -->
         <footer class="bg-secondary text-light py-3 fixed-bottom">
             <div class="container-fluid text-center">
-                <small>&copy; {{ date('Y') }} Tu Nombre. Todos los derechos reservados.</small>
+                <small>&copy; {{ date('Y') }} - {{ config('app.name') }} -
+                    {{ __('All rights reserved.') }}</small>
             </div>
         </footer>
     </div>
