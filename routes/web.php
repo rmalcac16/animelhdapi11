@@ -9,7 +9,12 @@ Route::get('/', function () {
     return view('welcome');
 });
 
-Auth::routes();
+if (env('AUTH_ROUTES_ENABLED', true)) {
+    Auth::routes([
+        'register' => env('REGISTER_ROUTE_ENABLED', true),
+        'reset' => env('PASSWORD_RESET_ROUTE_ENABLED', true),
+    ]);
+}
 
 Route::middleware(['auth'])->name('admin.')->prefix('admin')->group(function(){
 
