@@ -36,7 +36,6 @@
                                     </tr>
                                 </thead>
                                 <tbody id="results">
-                                    <!-- Aquí se insertarán los resultados -->
                                 </tbody>
                             </table>
                         </div>
@@ -56,11 +55,6 @@
     <script>
         const API_KEY = '{{ $apiKey }}';
         const BASE_URL = 'https://api.themoviedb.org/3/search/tv';
-
-        if (!API_KEY) {
-            alert('API Key no está configurada. Por favor, configúrala en los ajustes.');
-            throw new Error('API Key no configurada');
-        }
 
         let timeout = null;
 
@@ -141,7 +135,7 @@
                         document.getElementById('loading').style.display = 'none';
                         alert(
                             'Hubo un error al consultar la API. Revisa la consola para más detalles.'
-                            );
+                        );
                     });
             }, 500);
         });
