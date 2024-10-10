@@ -11,19 +11,21 @@ class Settings extends Component
         'voe' => '',
         'filemoon' => '',
         'lulustream' => '',
+        'tmdb' => '',
+        'mal' => '',
     ];
     public $jsonContent = [];
 
     public function mount()
     {
+        session()->forget(['message', 'error', 'success']);
+
         $filePath = storage_path('app/api_keys.json');
 
         if (File::exists($filePath)) {
             $this->jsonContent = json_decode(File::get($filePath), true);
             $this->apiKeys = array_merge($this->apiKeys, $this->jsonContent);
         }
-        
-        session()->forget('message');
     }
 
     public function saveApiKeys()

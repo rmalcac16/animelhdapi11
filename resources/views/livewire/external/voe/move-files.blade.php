@@ -1,122 +1,212 @@
-<div class="container my-4">
-    <!-- Main Title -->
-    <h2 class="mb-4 text-center text-light">File Management</h2>
-
-    <!-- Show success or error messages -->
-    @if (session()->has('message'))
-        <div class="alert alert-info">
-            {{ session('message') }}
+<div>
+    <div class="page-header no-margin-bottom">
+        <div class="container-fluid">
+            <h2 class="h5 no-margin-bottom">{{ __('Move Files') }}</h2>
         </div>
-    @endif
+    </div>
 
-    <!-- Show warning if the API key is not configured -->
-    @if (filled($apiKey))
-        <!-- Folder ID input form -->
-        <div class="card bg-secondary mb-4 shadow-sm border-0">
-            <div class="card-body">
-                <h5 class="card-title text-light">Search Files in Folder</h5>
-                <form wire:submit.prevent="getFiles" class="row g-3">
-                    <div class="col-md-6">
-                        <input type="number" wire:model.lazy="folderId" class="form-control bg-dark text-light border-0"
-                            placeholder="Enter Folder ID" min="0" aria-label="Folder ID">
+    <section class="mt-4">
+        <div class="container-fluid">
+            @if (session()->has('message'))
+                <div class="alert alert-success alert-dismissible fade show" role="alert">
+                    <strong>{{ __('Success!') }}</strong> {{ session('message') }}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            @elseif(session()->has('error'))
+                <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                    <strong>{{ __('Error!') }}</strong> {{ session('error') }}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            @endif
+
+            @if (filled($apiKey))
+                <h2 class="mb-4 text-center">{{ __('File Management') }}</h2>
+
+                <div class="row">
+                    <div class="col-12 col-md-6">
+                        <div class="card">
+                            <div class="card-header">{{ __('Get Files') }}</div>
+                            <div class="card-body">
+                                <form wire:submit.prevent="getFiles">
+                                    <div class="mb-3">
+                                        <label for="folder_id" class="form-label">{{ __('Initial Folder') }}</label>
+                                        <input type="number" min="0" id="folder_id" class="form-control"
+                                            wire:model="folderId" placeholder="{{ __('Insert initial folder') }}">
+                                    </div>
+                                    <button wire:loading.attr="disabled" type="submit" class="btn btn-primary">
+                                        <span wire:loading wire:target="getFiles"
+                                            class="spinner-border spinner-border-sm" role="status"
+                                            aria-hidden="true"></span>
+                                        <span wire:loading.remove wire:target="getFiles">{{ __('Get Files') }}</span>
+                                    </button>
+                                </form>
+                            </div>
+                        </div>
                     </div>
-                    <div class="col-md-3">
-                        <button class="btn btn-primary w-100" type="submit"
-                            style="background-color: var(--color-primary);">
-                            <i class="bi bi-folder"></i> Search
-                        </button>
+
+                    @if ($selectedFiles)
+                        <div class="col-12 col-md-6">
+                            <div class="card">
+                                <div class="card-header">{{ __('Move Files') }}</div>
+                                <div class="card-body">
+                                    <form wire:submit.prevent="moveSelectedFiles">
+                                        <div class="mb-3">
+                                            <label for="folder_id_destination"
+                                                class="form-label">{{ __('Destination Folder') }}</label>
+                                            <input type="number" min="0" id="folder_id_destination"
+                                                class="form-control" wire:model.live="destinationFolderId"
+                                                placeholder="{{ __('Insert destination folder') }}">
+                                        </div>
+                                        <button @if (empty($selectedFiles) || $destinationFolderId === null || $folderId == $destinationFolderId) disabled @endif
+                                            wire:loading.attr="disabled" type="submit" class="btn btn-primary">
+                                            <span wire:loading wire:target="moveSelectedFiles"
+                                                class="spinner-border spinner-border-sm" role="status"
+                                                aria-hidden="true"></span>
+                                            <span wire:loading.remove
+                                                wire:target="moveSelectedFiles">{{ __('Move Files') }}</span>
+                                        </button>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    @endif
+                </div>
+
+                @if (count($files) > 0)
+                    <div class="card  mb-4 shadow-sm border-0">
+                        <div class="card-body">
+                            <h5 class="card-title">{{ __('File List') }}</h5>
+                            <table class="table table-striped" id="fileTable">
+                                <thead>
+                                    <tr>
+                                        <th><input type="checkbox" id="selectAll"></th>
+                                        <th><a href="#" class="sort-link"
+                                                data-sort="name">{{ __('Name') }}</a></th>
+                                        <th><a href="#" class="sort-link"
+                                                data-sort="uploaded">{{ __('Upload Date') }}</a></th>
+                                        <th><a href="#" class="sort-link"
+                                                data-sort="views">{{ __('Views') }}</a></th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach ($files as $file)
+                                        <tr>
+                                            <td><input type="checkbox" class="file-checkbox"
+                                                    value="{{ $file['file_code'] }}"></td>
+                                            <td><a href="https://voe.sx/e/{{ $file['file_code'] }}" target="_blank">
+                                                    {{ $file['name'] }}
+                                                </a></td>
+                                            <td>{{ $file['uploaded'] }}</td>
+                                            <td>{{ $file['views'] }}</td>
+                                        </tr>
+                                    @endforeach
+                                </tbody>
+                            </table>
+                        </div>
                     </div>
-                </form>
-            </div>
+                @endif
+            @endif
         </div>
-
-        @if (count($files) > 0)
-            <!-- Form to select files and move them to another folder -->
-            <div class="card bg-secondary mb-4 shadow-sm border-0">
-                <div class="card-body">
-                    <h5 class="card-title text-light">Move Selected Files</h5>
-                    <form wire:submit.prevent="moveSelectedFiles" class="row g-3">
-                        <div class="col-md-4">
-                            <input type="number" wire:model.lazy="destinationFolderId"
-                                class="form-control bg-dark text-light border-0" placeholder="Destination Folder ID"
-                                min="0" required aria-label="Destination Folder ID">
-                        </div>
-                        <div class="col-md-4">
-                            <button class="btn btn-success w-100" type="submit"
-                                style="background-color: var(--color-primary);"
-                                @if (empty($selectedFiles) || !$destinationFolderId) disabled @endif>
-                                <i class="bi bi-arrow-right-circle"></i> Move Selected Files
-                            </button>
-                        </div>
-                    </form>
-                </div>
-            </div>
-
-            <!-- Simplified file table -->
-            <div class="card bg-secondary mb-4 shadow-sm border-0">
-                <div class="card-body">
-                    <h5 class="card-title text-light">File List</h5>
-                    <table class="table table-striped table-dark">
-                        <thead>
-                            <tr>
-                                <th><input type="checkbox" wire:model.live="selectAll"></th>
-                                <th>
-                                    <a href="#" wire:click.prevent="sortBy('name')" class="text-light">
-                                        Name
-                                        @if ($sortField === 'name')
-                                            @if ($sortDirection === 'asc')
-                                                <i class="bi bi-arrow-up"></i>
-                                            @else
-                                                <i class="bi bi-arrow-down"></i>
-                                            @endif
-                                        @endif
-                                    </a>
-                                </th>
-                                <th>
-                                    <a href="#" wire:click.prevent="sortBy('uploaded')" class="text-light">
-                                        Upload Date
-                                        @if ($sortField === 'uploaded')
-                                            @if ($sortDirection === 'asc')
-                                                <i class="bi bi-arrow-up"></i>
-                                            @else
-                                                <i class="bi bi-arrow-down"></i>
-                                            @endif
-                                        @endif
-                                    </a>
-                                </th>
-                                <th>
-                                    <a href="#" wire:click.prevent="sortBy('views')" class="text-light">
-                                        Views
-                                        @if ($sortField === 'views')
-                                            @if ($sortDirection === 'asc')
-                                                <i class="bi bi-arrow-up"></i>
-                                            @else
-                                                <i class="bi bi-arrow-down"></i>
-                                            @endif
-                                        @endif
-                                    </a>
-                                </th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @foreach ($files as $file)
-                                <tr>
-                                    <td><input type="checkbox" wire:model.live="selectedFiles"
-                                            value="{{ $file['file_code'] }}">
-                                    </td>
-                                    <td>{{ $file['name'] }}</td>
-                                    <td>{{ $file['uploaded'] }}</td>
-                                    <td>{{ $file['views'] }}</td>
-                                </tr>
-                            @endforeach
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-        @else
-            <div class="alert alert-warning text-center bg-secondary text-light border-0">
-                {{ __('No files found.') }}
-            </div>
-        @endif
-    @endif
+    </section>
 </div>
+
+@push('script')
+    <script>
+        Livewire.on('files-updating', () => {
+            initializeFileSelection();
+            initializeTableSorting();
+        });
+
+        function initializeFileSelection() {
+
+            let selectedFiles = [];
+
+            document.addEventListener('change', function(event) {
+                if (event.target.id === 'selectAll') {
+                    handleSelectAllChange();
+                }
+                if (event.target.classList.contains('file-checkbox')) {
+                    handleFileCheckboxChange(event.target);
+                }
+            });
+
+        }
+
+        function handleSelectAllChange() {
+            const selectAllCheckbox = document.getElementById('selectAll');
+            const fileCheckboxes = document.querySelectorAll('.file-checkbox');
+            let selectedFiles = [];
+
+            fileCheckboxes.forEach(function(checkbox) {
+                checkbox.checked = selectAllCheckbox.checked;
+                if (checkbox.checked) {
+                    selectedFiles.push(checkbox.value);
+                }
+            });
+
+            @this.set('selectedFiles', selectedFiles);
+        }
+
+        function handleFileCheckboxChange(checkbox) {
+            const selectedFiles = @this.get('selectedFiles');
+            if (checkbox.checked) {
+                selectedFiles.push(checkbox.value);
+            } else {
+                const index = selectedFiles.indexOf(checkbox.value);
+                if (index > -1) {
+                    selectedFiles.splice(index, 1);
+                }
+            }
+
+            @this.set('selectedFiles', selectedFiles);
+        }
+
+        function initializeTableSorting() {
+            document.addEventListener('click', function(event) {
+                if (event.target.classList.contains('sort-link')) {
+                    event.preventDefault();
+                    const field = event.target.getAttribute('data-sort');
+                    sortTable(field);
+                }
+            });
+
+            let sortOrder = {
+                name: 'asc',
+                uploaded: 'asc',
+                views: 'asc'
+            };
+
+            function sortTable(field) {
+                const fileTable = document.querySelector('#fileTable tbody');
+                if (!fileTable) return;
+
+                const rows = Array.from(fileTable.querySelectorAll('tr'));
+                const direction = sortOrder[field] === 'asc' ? 1 : -1;
+
+                rows.sort((rowA, rowB) => {
+                    const cellA = rowA.querySelector(`td:nth-child(${getColumnIndex(field)})`).innerText.trim();
+                    const cellB = rowB.querySelector(`td:nth-child(${getColumnIndex(field)})`).innerText.trim();
+
+                    if (!isNaN(cellA) && !isNaN(cellB)) {
+                        return direction * (parseInt(cellA) - parseInt(cellB));
+                    }
+                    return direction * cellA.localeCompare(cellB);
+                });
+
+                rows.forEach(row => fileTable.appendChild(row));
+                sortOrder[field] = sortOrder[field] === 'asc' ? 'desc' : 'asc';
+            }
+
+            function getColumnIndex(field) {
+                switch (field) {
+                    case 'name':
+                        return 2;
+                    case 'uploaded':
+                        return 3;
+                    case 'views':
+                        return 4;
+                }
+            }
+        }
+    </script>
+@endpush

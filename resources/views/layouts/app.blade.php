@@ -1,149 +1,179 @@
 <!DOCTYPE html>
-<html lang="es">
+<html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
 
 <head>
-    <meta charset="UTF-8">
-    <title>Panel de Administración - Livewire</title>
-
-    <!-- Bootstrap 5 CSS (CDN) -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
-
-    <!-- Bootstrap Icons -->
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
-
-    <!-- Estilos personalizados para tema oscuro -->
-    <link rel="stylesheet" href="{{ asset('assets/admin/css/main.css') }}">
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>{{ config('app.name') }} - {{ __('Administration') }}</title>
+    <meta name="description" content="">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="robots" content="all,follow">
+    <!-- Bootstrap CSS-->
+    <link rel="stylesheet" href="{{ asset('assets/admin/css/bootstrap.min.css') }}">
+    <!-- Font Awesome CSS-->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.css">
+    <!-- Custom Font Icons CSS-->
+    <link rel="stylesheet" href="{{ asset('assets/admin/css/font.css') }}">
+    <!-- Google fonts - Muli-->
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Muli:300,400,700">
+    <!-- Favicon-->
+    <link rel="shortcut icon" href="{{ asset('assets/admin/images/favicon.ico') }}">
 
     @livewireStyles
+    @stack('styles')
 
-    <style>
-        :root {
-            --nav-item-margin-bottom: 10px;
-            --sub-menu-padding-left: 15px;
-            --icon-margin-right: 8px;
-        }
-
-        .nav-item {
-            margin-bottom: var(--nav-item-margin-bottom);
-        }
-
-        .nav .collapse {
-            padding-left: var(--sub-menu-padding-left);
-        }
-
-        .nav-link i {
-            margin-right: var(--icon-margin-right);
-        }
-    </style>
+    <!-- Theme stylesheet-->
+    <link rel="stylesheet" href="{{ asset('assets/admin/css/style.default.premium.css') }}" id="theme-stylesheet">
+    <!-- Custom stylesheet-->
+    <link rel="stylesheet" href="{{ asset('assets/admin/css/custom.css') }}">
 </head>
 
 <body>
-
-    <nav class="bg-secondary text-light" id="sidebar" style="padding: 20px;">
-        <ul class="nav flex-column">
-            <li class="nav-item">
-                <a class="nav-link @if (request()->routeIs('admin.dashboard')) active @endif d-flex align-items-center"
-                    href="{{ route('admin.dashboard') }}">
-                    <i class="bi bi-house-fill"></i> Dashboard
-                </a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link d-flex align-items-center @if (request()->routeIs('admin.external.*')) active @endif"
-                    data-bs-toggle="collapse" href="#externalSubmenu" role="button"
-                    aria-expanded="@if (request()->routeIs('admin.external.*')) true @else false @endif"
-                    aria-controls="externalSubmenu">
-                    <i class="bi bi-box-arrow-in-right"></i> External
-                    <i class="bi bi-chevron-down ms-auto"></i>
-                </a>
-
-                <div class="collapse @if (request()->routeIs('admin.external.*')) show @endif" id="externalSubmenu">
-                    <ul class="nav flex-column ms-3">
-                        <li class="nav-item submenu">
-                            <a class="nav-link d-flex align-items-center" data-bs-toggle="collapse" href="#voeSubmenu"
-                                role="button" aria-expanded="@if (request()->routeIs('admin.external.voe.*')) true @else false @endif"
-                                aria-controls="voeSubmenu">
-                                <i class="bi bi-folder"></i> Voe
-                                <i class="bi bi-chevron-down ms-auto"></i>
-                            </a>
-
-                            <div class="collapse @if (request()->routeIs('admin.external.voe.*')) show @endif" id="voeSubmenu">
-                                <ul class="nav flex-column ms-3 submenu2">
-                                    <li class="nav-item">
-                                        <a class="nav-link" href="{{ route('admin.external.voe.move') }}">
-                                            <span class="@if (request()->routeIs('admin.external.voe.move')) active @endif">Mover</span>
-                                        </a>
-                                    </li>
-                                    <li class="nav-item">
-                                        <a class="nav-link" href="#">
-                                            <span>Clonar</span>
-                                        </a>
-                                    </li>
-                                </ul>
-                            </div>
-                        </li>
-                    </ul>
+    <header class="header">
+        <nav class="navbar navbar-expand-lg">
+            <div class="search-panel">
+                <div class="search-inner d-flex align-items-center justify-content-center">
+                    <div class="close-btn">Close <i class="fa fa-close"></i></div>
+                    <form id="searchForm" action="#">
+                        <div class="form-group">
+                            <input type="search" name="search" placeholder="What are you searching for...">
+                            <button type="submit" class="submit">Search</button>
+                        </div>
+                    </form>
                 </div>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link @if (request()->routeIs('admin.settings')) active @endif d-flex align-items-center"
-                    href="{{ route('admin.settings') }}">
-                    <i class="bi bi-gear"></i> {{ __('Settings') }}
-                </a>
-            </li>
-        </ul>
-    </nav>
-
-    <!-- Área principal a la derecha -->
-    <div class="main-content">
-        <!-- Encabezado fijo -->
-        <header class="bg-secondary text-light py-3 fixed-top">
-            <div class="container-fluid d-flex justify-content-between align-items-center">
-                <h4 class="mb-0">Panel de Administración</h4>
-
-                <!-- Menú de usuario -->
-                <div class="dropdown">
-                    <div class="d-flex align-items-center" data-bs-toggle="dropdown" aria-expanded="false">
-                        <!-- Imagen o logo de usuario -->
-                        <img src="{{ Auth::user()->avatar ?? 'https://ui-avatars.com/api/?name=' . urlencode(Auth::user()->name) }}"
-                            alt="{{ Auth::user()->name }}" class="rounded-circle me-2"
-                            style="width: 50px; height: 50px; object-fit: cover;">
-                        <span class="text-light">{{ Auth::user()->name }}</span>
+            </div>
+            <div class="container-fluid d-flex align-items-center justify-content-between">
+                <div class="navbar-header">
+                    <!-- Navbar Header-->
+                    <a href="index.html" class="navbar-brand">
+                        <div class="brand-text brand-big visible text-uppercase">
+                            <strong class="text-primary">Kawaii</strong><strong>Animes</strong>
+                        </div>
+                        <div class="brand-text brand-sm">
+                            <strong class="text-primary">K</strong><strong>A</strong>
+                        </div>
+                    </a>
+                    <!-- Sidebar Toggle Btn-->
+                    <button class="sidebar-toggle"><i class="fa fa-long-arrow-left"></i></button>
+                </div>
+                <div class="right-menu list-inline no-margin-bottom">
+                    <div class="list-inline-item logout">
+                        <form method="POST" action="{{ route('logout') }}">
+                            @csrf
+                            <button type="submit" class="nav-link text-white"
+                                style="background: none; border:0; outline:0">
+                                <span class="d-none d-sm-inline">{{ __('Logout') }} </span><i class="icon-logout"></i>
+                            </button>
+                        </form>
                     </div>
-
-                    <ul class="dropdown-menu dropdown-menu-dark dropdown-menu-end" aria-labelledby="dropdownMenuButton">
-                        <li>
-                            <a class="dropdown-item text-light" href="#"
-                                onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
-                                <i class="bi bi-box-arrow-right"></i> Desconectar
-                            </a>
+                </div>
+            </div>
+        </nav>
+    </header>
+    <div class="d-flex align-items-stretch">
+        <!-- Sidebar Navigation-->
+        <nav id="sidebar">
+            <!-- Sidebar Header-->
+            <div class="sidebar-header d-flex align-items-center">
+                <a href="pages-profile.html">
+                    <div class="avatar">
+                        <img src="{{ Auth::user()->avatar ?? 'https://ui-avatars.com/api/?background=random&name=' . urlencode(Auth::user()->name) }}"
+                            alt="..." class="img-fluid rounded-circle">
+                    </div>
+                </a>
+                <div class="title">
+                    <h1 class="h5">{{ Auth::user()->name }}</h1>
+                    <p>{{ Auth::user()->email }}</p>
+                </div>
+            </div>
+            <!-- Sidebar Navigation Menus-->
+            <span class="heading">{{ __('Main') }}</span>
+            <ul class="list-unstyled">
+                <li @if (request()->routeIs('admin.dashboard')) class="active" @endif>
+                    <a href="{{ route('admin.dashboard') }}">
+                        <i class="icon-home"></i>{{ __('Home') }}
+                    </a>
+                </li>
+                <li @if (request()->routeIs('admin.animes*')) class="active" @endif>
+                    <a href="{{ route('admin.animes.index') }}">
+                        <i class="icon-writing-whiteboard"></i>{{ __('Animes') }}
+                    </a>
+                </li>
+                <li @if (request()->routeIs('admin.settings')) class="active" @endif>
+                    <a href="{{ route('admin.settings') }}">
+                        <i class="icon-settings"></i>{{ __('Settings') }}
+                    </a>
+                </li>
+            </ul>
+            <span class="heading">{{ __('External') }}</span>
+            <ul class="list-unstyled">
+                <li @if (request()->routeIs('admin.external.voe*')) class="active" @endif>
+                    <a href="#voeDropdown" @if (request()->routeIs('admin.external.voe*')) aria-expanded="true" @endif
+                        data-toggle="collapse">
+                        <i class="icon-website"></i>{{ __('Voe') }}
+                    </a>
+                    <ul id="voeDropdown" class="collapse list-unstyled @if (request()->routeIs('admin.external.voe*')) show @endif">
+                        <li @if (request()->routeIs('admin.external.voe.clone')) class="active" @endif>
+                            <a href="{{ route('admin.external.voe.clone') }}">{{ __('Clone') }}</a>
+                        </li>
+                        <li @if (request()->routeIs('admin.external.voe.move')) class="active" @endif>
+                            <a href="{{ route('admin.external.voe.move') }}">{{ __('Move') }}</a>
                         </li>
                     </ul>
+                </li>
+                <li @if (request()->routeIs('admin.external.filemoon*')) class="active" @endif>
+                    <a href="#filemoonDropdown" @if (request()->routeIs('admin.external.filemoon*')) aria-expanded="true" @endif
+                        data-toggle="collapse">
+                        <i class="icon-website"></i>{{ __('Filemoon') }}
+                    </a>
+                    <ul id="filemoonDropdown"
+                        class="collapse list-unstyled @if (request()->routeIs('admin.external.filemoon*')) show @endif">
+                        <li @if (request()->routeIs('admin.external.filemoon.clone')) class="active" @endif>
+                            <a href="{{ route('admin.external.filemoon.clone') }}">{{ __('Clone') }}</a>
+                        </li>
+                    </ul>
+                </li>
+                <li @if (request()->routeIs('admin.external.lulustream*')) class="active" @endif>
+                    <a href="#lulustreamDropdown" @if (request()->routeIs('admin.external.lulustream*')) aria-expanded="true" @endif
+                        data-toggle="collapse">
+                        <i class="icon-website"></i>{{ __('Lulustream') }}
+                    </a>
+                    <ul id="lulustreamDropdown"
+                        class="collapse list-unstyled @if (request()->routeIs('admin.external.lulustream*')) show @endif">
+                        <li @if (request()->routeIs('admin.external.lulustream.clone')) class="active" @endif>
+                            <a href="{{ route('admin.external.lulustream.clone') }}">{{ __('Clone') }}</a>
+                        </li>
+                    </ul>
+                </li>
+            </ul>
+        </nav>
+
+        <div class="page-content">
+            @hasSection('content')
+                @yield('content')
+            @else
+                {{ $slot }}
+            @endif
+            <footer class="footer">
+                <div class="footer__block block no-margin-bottom">
+                    <div class="container-fluid text-center">
+                        <p class="no-margin-bottom">&copy; {{ date('Y') }} - {{ config('app.name') }} -
+                            {{ __('All rights reserved.') }}</p>
+                    </div>
                 </div>
-
-                <!-- Formulario de logout (oculto) -->
-                <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
-                    @csrf
-                </form>
-            </div>
-        </header>
-
-        <!-- Contenido desplazable -->
-        <main class="content overflow-auto">
-            {{ $slot }}
-        </main>
-
-        <!-- Pie de página fijo -->
-        <footer class="bg-secondary text-light py-3 fixed-bottom">
-            <div class="container-fluid text-center">
-                <small>&copy; {{ date('Y') }} - {{ config('app.name') }} -
-                    {{ __('All rights reserved.') }}</small>
-            </div>
-        </footer>
+            </footer>
+        </div>
     </div>
 
-    <!-- Bootstrap 5 JS (CDN) -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- JavaScript files-->
+    <script src="{{ asset('assets/admin/js/jquery.min.js') }}"></script>
+    <script src="{{ asset('assets/admin/js/popper.min.js') }}"></script>
+    <script src="{{ asset('assets/admin/js/bootstrap.min.js') }}"></script>
+    <script src="{{ asset('assets/admin/js/jquery.cookie.js') }}"></script>
+    <script src="{{ asset('assets/admin/js/front.js') }}"></script>
+
     @livewireScripts
+    @stack('scripts')
 </body>
 
 </html>

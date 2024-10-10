@@ -12,15 +12,12 @@ class MoveFiles extends Component
     public $destinationFolderId;
     public $files = [];
     public $selectedFiles = [];
-    public $selectAll = false;
-
-    public $sortField = 'name';
-    public $sortDirection = 'asc'; 
-
     public $apiKey = '';
 
     public function mount()
     {
+        session()->forget(['message', 'error', 'success']);
+
         $filePath = storage_path('app/api_keys.json');
 
         if (File::exists($filePath)) {
@@ -28,37 +25,11 @@ class MoveFiles extends Component
             if (filled($apiKeys['voe'])) {
                 $this->apiKey = $apiKeys['voe'];
             } else {
-                session()->flash('message', __('API Key for Voe is not configured. Please configure it first.'));
+                session()->flash('error', __('API Key for Voe is not configured. Please configure it first.'));
             }
         } else {
-            session()->flash('message', __('The API keys file does not exist. Please configure the API Key for Voe.'));
+            session()->flash('error', __('The API keys file does not exist. Please configure the API Key for Voe.'));
         }
-    }
-
-    public function updatingSelectAll($value)
-    {
-        if ($value) {
-            $this->selectedFiles = collect($this->files)->pluck('file_code')->toArray();
-        } else {
-            $this->selectedFiles = [];
-        }
-    }
-
-    public function updatedSelectedFiles()
-    {
-        $this->selectAll = count($this->selectedFiles) === count($this->files);
-    }
-
-    public function sortBy($field)
-    {
-        if ($this->sortField === $field) {
-            $this->sortDirection = $this->sortDirection === 'asc' ? 'desc' : 'asc';
-        } else {
-            $this->sortField = $field;
-            $this->sortDirection = 'asc';
-        }
-
-        $this->getFiles();
     }
 
     public function getFiles()
@@ -70,16 +41,10 @@ class MoveFiles extends Component
 
         if ($response->successful()) {
             $data = $response->json();
-
             if (isset($data['result']['files']['data'])) {
                 $this->files = $data['result']['files']['data'];
-
-                $this->files = collect($this->files)->sortBy(function ($file) {
-                    return strtolower($file[$this->sortField] ?? '');
-                }, SORT_REGULAR, $this->sortDirection === 'desc')->values()->toArray();
-
                 $this->selectedFiles = [];
-                $this->selectAll = false;
+                $this->dispatch('files-updating');
             } else {
                 $this->files = [];
                 session()->flash('message', __('No files found in this folder.'));
@@ -90,14 +55,9 @@ class MoveFiles extends Component
         }
     }
 
-    public function updatedFolderId()
-    {
-        $this->getFiles();
-    }
-
     public function moveSelectedFiles()
     {
-
+        
         if (empty($this->selectedFiles)) {
             session()->flash('message', __('No files selected for moving.'));
             return;
@@ -131,12 +91,16 @@ class MoveFiles extends Component
         }
 
         $message = __("Files successfully moved: :success. Failed: :failure.", ['success' => $successCount, 'failure' => $failureCount]);
+        $this->resetFields();
         session()->flash('message', $message);
+    }
 
-        $this->getFiles();
-
+    public function resetFields()
+    {
+        $this->destinationFolderId = null;
+        $this->files = [];
         $this->selectedFiles = [];
-        $this->selectAll = false;
+        $this->dispatch('files-updating');
     }
 
     public function render()
