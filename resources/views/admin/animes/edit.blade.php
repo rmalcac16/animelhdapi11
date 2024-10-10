@@ -637,9 +637,22 @@
                             document.querySelector('#status').value = data.status == 'finished_airing' ? 0 :
                                 1 || '';
                         }
-                        if (data.broadcast && data.broadcast.day_of_the_week) {
-                            document.querySelector('#broadcast').value = mapDays(data.broadcast
-                                .day_of_the_week) || '';
+                        if (data.broadcast && data.broadcast.day_of_the_week && data.broadcast.start_time) {
+                            let broadcastDay = mapDays(data.broadcast
+                                .day_of_the_week);
+                            let [hours, minutes] = data.broadcast.start_time.split(':').map(
+                                Number);
+                            hours -= 14;
+
+
+                            if (hours < 0) {
+                                broadcastDay -= 1;
+                                if (broadcastDay < 1) {
+                                    broadcastDay =
+                                        7;
+                                }
+                            }
+                            document.querySelector('#broadcast').value = broadcastDay || '';
                         }
                         document.querySelector('#popularity').value = data.popularity || '';
                         document.querySelector('#vote_average').value = data.mean || '';
