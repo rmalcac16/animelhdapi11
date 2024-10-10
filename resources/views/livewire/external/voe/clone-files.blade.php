@@ -101,7 +101,7 @@
 
 </div>
 
-@push('script')
+@push('scripts')
     <script>
         function sortList(order) {
             var list = document.getElementById('responseList');

@@ -110,9 +110,10 @@
     </section>
 </div>
 
-@push('script')
+@push('scripts')
     <script>
         Livewire.on('files-updating', () => {
+            console.log("Hola");
             initializeFileSelection();
             initializeTableSorting();
         });
