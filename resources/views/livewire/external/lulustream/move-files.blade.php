@@ -7,15 +7,19 @@
 
     <section class="mt-4">
         <div class="container-fluid">
-            @if (session()->has('message'))
+            @if (session()->has('success'))
                 <div class="alert alert-success alert-dismissible fade show" role="alert">
-                    <strong>{{ __('Success!') }}</strong> {{ session('message') }}
-                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    <strong>{{ __('Success!') }}</strong> {{ session('success') }}
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
                 </div>
             @elseif(session()->has('error'))
                 <div class="alert alert-danger alert-dismissible fade show" role="alert">
                     <strong>{{ __('Error!') }}</strong> {{ session('error') }}
-                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
                 </div>
             @endif
 
@@ -91,10 +95,11 @@
                                 <tbody>
                                     @foreach ($files as $file)
                                         <tr>
-                                            <td><input type="checkbox" class="file-checkbox"
+                                            <td><input type="checkbox" id="selectFile" class="file-checkbox"
                                                     value="{{ $file['file_code'] }}"></td>
-                                            <td><a href="https://voe.sx/e/{{ $file['file_code'] }}" target="_blank">
-                                                    {{ $file['name'] }}
+                                            <td><a href="https://luluvdo.com/e/{{ $file['file_code'] }}"
+                                                    target="_blank">
+                                                    {{ $file['title'] }}
                                                 </a></td>
                                             <td>{{ $file['uploaded'] }}</td>
                                             <td>{{ $file['views'] }}</td>

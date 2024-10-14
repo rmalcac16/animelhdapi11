@@ -95,5 +95,7 @@
     "Copy": "Copiar",
     "Clone process completed.": "Proceso de clonación completado.",
     "Success!": "¡Éxito!",
-    "Error!": "¡Error!"
+    "Error!": "¡Error!",
+    "Insert destination folder": "Insertar carpeta de destino",
+    "Files successfully moved: :success. Failed: :failure.": "Archivos movidos con éxito: :success. Fallidos: :failure."
 }

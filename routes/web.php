@@ -42,6 +42,7 @@ Route::middleware(['auth'])->name('admin.')->prefix('admin')->group(function(){
             Route::get('clone', App\Livewire\External\Filemoon\CloneFiles::class)->name('clone');
         });
         Route::name('lulustream.')->prefix('lulustream')->group(function(){
+            Route::get('move', App\Livewire\External\Lulustream\MoveFiles::class)->name('move');
             Route::get('clone', App\Livewire\External\Lulustream\CloneFiles::class)->name('clone');
         });
     });

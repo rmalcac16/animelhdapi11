@@ -143,6 +143,9 @@
                         <li @if (request()->routeIs('admin.external.lulustream.clone')) class="active" @endif>
                             <a href="{{ route('admin.external.lulustream.clone') }}">{{ __('Clone') }}</a>
                         </li>
+                        <li @if (request()->routeIs('admin.external.lulustream.move')) class="active" @endif>
+                            <a href="{{ route('admin.external.lulustream.move') }}">{{ __('Move') }}</a>
+                        </li>
                     </ul>
                 </li>
             </ul>
