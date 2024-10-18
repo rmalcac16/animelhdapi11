@@ -99,6 +99,17 @@
                         <i class="icon-writing-whiteboard"></i>{{ __('Animes') }}
                     </a>
                 </li>
+                <li @if (request()->routeIs('admin.users*')) class="active" @endif>
+                    <a href="#usersDropdown" @if (request()->routeIs('admin.users**')) aria-expanded="true" @endif
+                        data-toggle="collapse">
+                        <i class="icon-user"></i>{{ __('Users') }}
+                    </a>
+                    <ul id="usersDropdown" class="collapse list-unstyled @if (request()->routeIs('admin.users**')) show @endif">
+                        <li @if (request()->routeIs('admin.users.update')) class="active" @endif>
+                            <a href="{{ route('admin.users.update') }}">{{ __('Update by admin') }}</a>
+                        </li>
+                    </ul>
+                </li>
                 <li @if (request()->routeIs('admin.settings')) class="active" @endif>
                     <a href="{{ route('admin.settings') }}">
                         <i class="icon-settings"></i>{{ __('Settings') }}

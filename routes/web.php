@@ -4,6 +4,7 @@ use Illuminate\Support\Facades\Route;
 
 use App\Livewire\Admin\Dashboard;
 use App\Livewire\Admin\Settings;
+use App\Livewire\Admin\Users\UpdateUser;
 
 use App\Http\Controllers\Admin\AnimeController;
 
@@ -30,8 +31,9 @@ Route::middleware(['auth'])->name('admin.')->prefix('admin')->group(function(){
     Route::get('animes/fetch-anime-data-id', [AnimeController::class, 'fetchAnimeDataById'])->name('animes.fetchanimedataid');
     Route::get('animes/data', [AnimeController::class, 'getAnimesData'])->name('animes.data');
     Route::resource('animes', AnimeController::class);
-    
 
+    Route::get('users/update', UpdateUser::class)->name('users.update');
+    
     // Voe
     Route::name('external.')->prefix('external')->group(function(){
         Route::name('voe.')->prefix('voe')->group(function(){

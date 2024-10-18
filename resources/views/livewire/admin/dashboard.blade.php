@@ -12,7 +12,7 @@
                         <div class="progress-details d-flex align-items-end justify-content-between">
                             <div class="title">
                                 <div class="icon"><i class="icon-user-1"></i></div>
-                                <strong>{{ __('Admins') }}</strong>
+                                <strong>{{ __('Users') }}</strong>
                             </div>
                             <div class="number dashtext-1">{{ $usersCount }}</div>
                         </div>

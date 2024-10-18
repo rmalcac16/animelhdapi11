@@ -97,5 +97,20 @@
     "Success!": "¡Éxito!",
     "Error!": "¡Error!",
     "Insert destination folder": "Insertar carpeta de destino",
-    "Files successfully moved: :success. Failed: :failure.": "Archivos movidos con éxito: :success. Fallidos: :failure."
+    "Files successfully moved: :success. Failed: :failure.": "Archivos movidos con éxito: :success. Fallidos: :failure.",
+    "User": "Usuario",
+    "Insert name or email...": "Insertar nombre o email...",
+    "Premium status updated successfully.": "Estado premium actualizado con éxito.",
+    "Clear users query": "Limpiar consulta de usuarios",
+    "Update user": "Actualizar usuario",
+    "Premium Status": "Estado Premium",
+    "Not Premium": "No Premium",
+    "Change Password": "Cambiar Contraseña",
+    "New Password": "Nueva Contraseña",
+    "Update Password": "Actualizar Contraseña",
+    "Enter new password": "Introduce nueva contraseña",
+    "Cancel": "Cancelar",
+    "Password updated successfully": "Contraseña actualizada con éxito",
+    "Users": "Usuarios",
+    "Update by admin": "Actualizado por admin"
 }
