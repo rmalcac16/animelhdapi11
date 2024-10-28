@@ -112,5 +112,11 @@
     "Cancel": "Cancelar",
     "Password updated successfully": "Contraseña actualizada con éxito",
     "Users": "Usuarios",
-    "Update by admin": "Actualizado por admin"
+    "Update by admin": "Actualizado por admin",
+    "Email updated successfully.": "Email actualizado con éxito.",
+    "Change Email": "Cambiar Email",
+    "Current Email": "Email Actual",
+    "New Email": "Nuevo Email",
+    "Enter new email": "Introduce nuevo email",
+    "Update Email": "Actualizar Email"
 }

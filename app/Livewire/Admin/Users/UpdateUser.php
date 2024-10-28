@@ -12,6 +12,8 @@ class UpdateUser extends Component
     public $selectedUser = null;
     public $showPasswordField = false;
     public $newPassword = '';
+    public $showEmailField = false;
+    public $newEmail = '';
 
     public function updatedQuery()
     {
@@ -29,12 +31,38 @@ class UpdateUser extends Component
     {
         $this->selectedUser = User::find($userId);
         $this->showPasswordField = false;
-        $this->newPassword = ''; // Reiniciar el campo de contraseña
+        $this->newPassword = '';
+        $this->showEmailField = false;
+        $this->newEmail = '';
+    }
+
+    public function enableEmailChange()
+    {
+        $this->showEmailField = true;
     }
 
     public function enablePasswordChange()
     {
         $this->showPasswordField = true;
+    }
+
+    public function updateEmail()
+    {
+        if ($this->selectedUser && $this->newEmail !== '') {
+
+            //Validated email
+            $this->validate([
+                'newEmail' => 'required|email|unique:users,email'
+            ]);
+            
+            $this->selectedUser->update([
+                'email' => $this->newEmail
+            ]);
+            $this->newEmail = '';
+            session()->flash('success', __('Email updated successfully.'));
+            $this->resetData();
+            $this->updatedQuery();
+        }
     }
 
     public function updatePassword()
@@ -44,10 +72,16 @@ class UpdateUser extends Component
                 'password' => bcrypt($this->newPassword)
             ]);
             $this->newPassword = '';
-            session()->flash('message', __('Password updated successfully.'));
+            session()->flash('success', __('Password updated successfully.'));
             $this->resetData();
             $this->updatedQuery();
         }
+    }
+
+    public function cancelUpdateEmail()
+    {
+        $this->showEmailField = false;
+        $this->newEmail = '';
     }
 
     public function cancelUpdatePassword()
@@ -62,7 +96,7 @@ class UpdateUser extends Component
             $this->selectedUser->update([
                 'isPremium' => !$this->selectedUser->isPremium
             ]);
-            session()->flash('message', __('Premium status updated successfully.'));
+            session()->flash('success', __('Premium status updated successfully.'));
         }
 
         $this->resetData();
@@ -74,6 +108,8 @@ class UpdateUser extends Component
         $this->selectedUser = null;
         $this->showPasswordField = false;
         $this->newPassword = '';
+        $this->showEmailField = false;
+        $this->newEmail = '';
     }
 
     public function clearAllData(){
@@ -82,6 +118,8 @@ class UpdateUser extends Component
         $this->selectedUser = null;
         $this->showPasswordField = false;
         $this->newPassword = '';
+        $this->showEmailField = false;
+        $this->newEmail = '';
     }
 
     public function render()

@@ -50,6 +50,14 @@
                             </button>
                         </div>
 
+                        @if (!$showEmailField)
+                            <div class="text-center">
+                                <button class="btn btn-primary btn-sm mt-3 w-100" wire:click="enableEmailChange">
+                                    {{ __('Change Email') }}
+                                </button>
+                            </div>
+                        @endif
+
                         @if (!$showPasswordField)
                             <div class="text-center">
                                 <button class="btn btn-primary btn-sm mt-3 w-100" wire:click="enablePasswordChange">
@@ -58,28 +66,57 @@
                             </div>
                         @endif
 
-                        @if ($showPasswordField)
+                        @if ($showEmailField)
                             <div class="form-group mt-3">
-                                <label for="newPassword">{{ __('New Password') }}</label>
-                                <input type="password" class="form-control" wire:model="newPassword"
-                                    placeholder="{{ __('Enter new password') }}" />
-                                <button class="btn btn-primary btn-sm mt-2" wire:click="updatePassword">
-                                    {{ __('Update Password') }}
+                                <label for="currentEmail">{{ __('Current Email') }}</label>
+                                <input disabled type="email" class="form-control"
+                                    value="{{ $selectedUser->email }}" />
+                                <label for="newEmail">{{ __('New Email') }}</label>
+                                <input type="email" class="form-control" wire:model="newEmail"
+                                    placeholder="{{ __('Enter new email') }}" />
+                                @error('newEmail')
+                                    <small class="text-danger">{{ $message }}</small>
+                                @enderror
+                            </div>
+                            <div class="form-group">
+                                <button class="btn btn-primary btn-sm mt-2" wire:click="updateEmail">
+                                    {{ __('Update Email') }}
                                 </button>
-                                <button class="btn btn-secondary btn-sm mt-2" wire:click="cancelUpdatePassword">
+                                <button class="btn btn-secondary btn-sm mt-2" wire:click="cancelUpdateEmail">
                                     {{ __('Cancel') }}
                                 </button>
                             </div>
-                        @endif
                     </div>
-                </div>
             @endif
 
-            @if (session()->has('message'))
-                <div class="alert alert-success mt-3">
-                    {{ session('message') }}
+            @if ($showPasswordField)
+                <div class="form-group mt-3">
+                    <label for="newPassword">{{ __('New Password') }}</label>
+                    <input type="password" class="form-control" wire:model="newPassword"
+                        placeholder="{{ __('Enter new password') }}" />
+                    <button class="btn btn-primary btn-sm mt-2" wire:click="updatePassword">
+                        {{ __('Update Password') }}
+                    </button>
+                    <button class="btn btn-secondary btn-sm mt-2" wire:click="cancelUpdatePassword">
+                        {{ __('Cancel') }}
+                    </button>
                 </div>
             @endif
         </div>
-    </section>
+</div>
+@endif
+
+@if (session()->has('success'))
+    <div class="alert alert-success mt-3">
+        {{ session('success') }}
+    </div>
+@else
+    @if (session()->has('error'))
+        <div class="alert alert-danger mt-3">
+            {{ session('error') }}
+        </div>
+    @endif
+@endif
+</div>
+</section>
 </div>
