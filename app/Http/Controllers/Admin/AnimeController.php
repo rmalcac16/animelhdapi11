@@ -82,10 +82,10 @@ class AnimeController extends Controller
     {
 
         $data = $request->validate([
-            'name' => 'required|string|max:255',
-            'name_alternative' => 'nullable|string|max:255',
-            'banner' => 'nullable|string|max:255',
-            'poster' => 'nullable|string|max:255',
+            'name' => 'required|string|max:355',
+            'name_alternative' => 'nullable|string|max:355',
+            'banner' => 'nullable|string|max:355',
+            'poster' => 'nullable|string|max:355',
             'overview' => 'nullable|string',
             'aired' => 'required|date',
             'type' => 'required|string',
@@ -149,12 +149,12 @@ class AnimeController extends Controller
     public function storeTmdb(Request $request)
     {
         $data = $request->validate([
-            'name' => 'required|string|max:255',
-            'original_name' => 'required|string|max:255',
+            'name' => 'required|string|max:355',
+            'original_name' => 'required|string|max:355',
             'overview' => 'required|string',
             'popularity' => 'required|numeric',
-            'poster_path' => 'required|string|max:255',
-            'backdrop_path' => 'nullable|string|max:255',
+            'poster_path' => 'required|string|max:355',
+            'backdrop_path' => 'nullable|string|max:355',
             'first_air_date' => 'required|date',
             'vote_average' => 'required|numeric',
             'vote_count' => 'required|integer',
